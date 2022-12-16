@@ -1,5 +1,6 @@
 import { DatabaseConnection } from "../../../../main/database/typeorm.connection";
 import { NotesModel } from "../../../models/note.models";
+import { UserModel } from "../../../models/user.models";
 import { NoteEntity } from "../../../shared/entities/note.entity";
 
 export class NoteRepository {
@@ -20,6 +21,7 @@ export class NoteRepository {
   // TEM QUE PEGAR O ID DO USUÁRIO???
   public async create(note: NotesModel) {
     const newNote = this._repository.create({
+      user: note.usuario,
       title: note.description,
       description: note.description
     })
