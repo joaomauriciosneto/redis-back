@@ -9,18 +9,9 @@ export class NotesModel {
         private _title: string,
         private _description: string,
         private _saveNote: boolean = false,
-        private _usuario: UserModel
+        private _user: UserModel
     ){
         this._id = idNotes();
-    }
-
-    // DÚVIDA
-    public get usuario() {
-      return this._usuario
-    }
-    // DÚVIDA
-    public set usuario(usuario: UserModel) {
-      this._usuario = usuario
     }
 
     public get saveNote() {
@@ -34,6 +25,18 @@ export class NotesModel {
     public get idNotes() {
         return this._id;
     }
+
+    public get notes(): string[] {
+        return this.notes ?? []
+    }
+
+    public get user() {
+        return this._user;
+    }
+
+    // public set user(user: UserModel) {
+    //   this._user = user
+    // }
 
     public get title() {
         return this._title;
@@ -56,9 +59,23 @@ export class NotesModel {
             id: this._id,
             title: this._title,
             description: this._description,
-            saved: this._saveNote,
-            usuario: this.usuario
+            saveNote: this._saveNote,
+            notes: this.notes,
+            user: this.user
         }
+    }
+
+    public static create(
+        id: string,
+        title: string,
+        description: string,
+        saveNote: boolean,
+        user: UserModel
+    ) {
+       const note = new NotesModel(title, description, saveNote, user);
+       note._id = id;
+
+       return note;
     }
 
 }

@@ -1,7 +1,9 @@
 import { DatabaseConnection } from "../../../../main/database/typeorm.connection";
 import { UserModel } from "../../../models/user.models";
 import { UserEntity } from "../../../shared/entities/user.entity";
- 
+
+// REPOSITÓRIO NÃO PODE RETORNAR ENTITY E SIM UM MODEL
+
 interface UpdateUserDTO {
   id: string;
   email: string;
@@ -16,7 +18,7 @@ export class UserRepository {
   }
 
   public async list() {
-    const result = await this._repository.find(); 
+    const result = await this._repository.find();
 
     const users = result.map(item => {
       return this.mapEntityToModel(item);
@@ -27,8 +29,12 @@ export class UserRepository {
 
   public async get(id: string) {
     const result = await this._repository.findOneBy({idUser: String(id)});
-    
-    return result;
+
+    if(!result) {
+      return null
+    }
+
+    return this.mapEntityToModel(result);
   }
 
   public async create(user: UserModel) {
@@ -39,7 +45,7 @@ export class UserRepository {
     })
 
     const result = await this._repository.save(userCreate);
-   
+
     return this.mapEntityToModel(result);
 
   }
@@ -61,9 +67,13 @@ export class UserRepository {
   }
 
   public async login(email: string, password: string) {
-    const result = await this._repository.findOneBy({email, password});  
+    const result = await this._repository.findOneBy({email, password});
 
-    return result;
+    if(!result) {
+      return null;
+    }
+
+    return this.mapEntityToModel(result);
   }
 
 }

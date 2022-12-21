@@ -16,8 +16,15 @@ export class NoteEntity {
   @Column()
   saveNote: boolean = false;
 
-  //criar mais uma coluna.... verificar a api-vagas
-  @ManyToOne(() => UserEntity, user => user.note)
+  @Column({
+    name: 'id_user'
+  })
+  idUser: string;
+
+  @ManyToOne(() => UserEntity, {
+    eager: true
+  })
+
   @JoinColumn({name: 'id_user'})
   user: UserEntity;
 

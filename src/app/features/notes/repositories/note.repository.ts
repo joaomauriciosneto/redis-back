@@ -2,9 +2,21 @@ import { DatabaseConnection } from "../../../../main/database/typeorm.connection
 import { NotesModel } from "../../../models/note.models";
 import { UserModel } from "../../../models/user.models";
 import { NoteEntity } from "../../../shared/entities/note.entity";
+import { UserRepository } from "../../users/repositories/user.repository";
 
 export class NoteRepository {
   private _repository = DatabaseConnection.connection.getRepository(NoteEntity);
+
+  private mapEntityToModel(noteEntity: NoteEntity) {
+    const user = UserModel.create(noteEntity.user.idUser, noteEntity.user.email, noteEntity.user.password)
+
+    return NotesModel.create(
+      noteEntity.id,
+      noteEntity.title,
+      noteEntity.description,
+      noteEntity.saveNote,
+      user )
+  }
 
   public async list(){
     return await this._repository.find({
@@ -18,15 +30,25 @@ export class NoteRepository {
     return await this._repository.findOneBy({id})
   }
 
-  // TEM QUE PEGAR O ID DO USUÁRIO???
   public async create(note: NotesModel) {
-    const newNote = this._repository.create({
-      user: note.usuario,
-      title: note.description,
-      description: note.description
+    const userRepository = new UserRepository();
+    const user = await userRepository.get(note.user.id);
+
+    if(!user) {
+      throw new Error('User not found!');
+    }
+
+    const noteEntity = this._repository.create({
+      id: note.idNotes,
+      title: note.title,
+      description: note.description,
+      saveNote: note.saveNote,
+      user: user
     })
 
-    return await this._repository.save(newNote);
+    await this._repository.save(noteEntity);
+
+    return this.mapEntityToModel(noteEntity);
   }
 
 }
