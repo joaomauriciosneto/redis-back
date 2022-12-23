@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { CacheRepository } from "../../../shared/repositories/cache.repository";
 import { serverError, success } from "../../../shared/util/response.helper";
 import { UserRepository } from "../repositories/user.repository";
 import { CreateUserUseCase } from "../usecases/create-user.usecase";
@@ -12,8 +13,10 @@ export class UserController {
   public async create(req: Request, res: Response) {
     try {
       const {email, password} = req.body;
-      const repository = new UserRepository();
-      const usecase = new CreateUserUseCase(repository);
+      const usecase = new CreateUserUseCase(
+        new UserRepository(),
+        new CacheRepository()
+      );
 
       const restult = await usecase.execute({
         email,
@@ -29,8 +32,10 @@ export class UserController {
 
   public async list(req: Request, res: Response) {
     try {
-      const repository = new UserRepository();
-      const usecase = new ListUsersUseCase(repository);
+      const usecase = new ListUsersUseCase(
+        new UserRepository(),
+        new CacheRepository()
+      );
 
       const result = await usecase.execute();
 
@@ -44,26 +49,44 @@ export class UserController {
   public async get(req: Request, res: Response) {
     try {
       const {id} = req.params;
-      const repository = new UserRepository();
-      const usecase = new GetUserUseCase(repository);
+      const usecase = new GetUserUseCase(
+        new UserRepository(),
+        new CacheRepository()
+      );
 
       const result = await usecase.execute({id});
 
       return success(res, result, 'Listing User by Id!');
-      
+
     } catch (error: any) {
       return serverError(res, error)
     }
   }
 
-  // FALTA VER O MÉTODO NO USECASE
   public async update(req: Request, res: Response) {
     try {
       const {id} = req.params;
       const {email, password} = req.body;
-      const repository = new UserRepository();
-      const usecase = new UpdateUserUseCase(repository);
-      
+      const usecase = new UpdateUserUseCase(
+        new UserRepository(),
+        new CacheRepository()
+      );
+
+      const result = await usecase.execute({
+        id,
+        email,
+        password
+      })
+
+      if(result == null) {
+        return res.status(404).send({
+          ok: false,
+          message: 'User not found!'
+        })
+      }
+
+      return success(res, result, 'User updated successfully!');
+
     } catch (error: any) {
       return serverError(res, error)
     }
@@ -89,16 +112,24 @@ export class UserController {
     try {
 
       const {email, password} = req.body;
-      const repository = new UserRepository();
-      const usecase = new LoginUserUseCase(repository);
+      const usecase = new LoginUserUseCase(
+        new UserRepository(),
+        new CacheRepository()
+      );
 
       const result = await usecase.execute(email, password);
-      console.log(result)
+
+      if(!result) {
+        return res.status(400).send({
+          ok: false,
+          message: 'Not found!'
+        })
+      }
 
       return success(res, result, 'User logged in!');
-      
+
     } catch (error: any) {
-      
+
       return res.status(500).send({
         ok: false,
         message: error.toString()

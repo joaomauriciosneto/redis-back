@@ -19,15 +19,37 @@ export class NoteRepository {
   }
 
   public async list(){
-    return await this._repository.find({
+    const resutl = await this._repository.find({
       relations: {
         user: true
       }
     })
+
+    const notes = resutl.map(item => {
+      return this.mapEntityToModel(item)
+    })
+
+    return notes;
   }
 
   public async get(id: string) {
-    return await this._repository.findOneBy({id})
+    const result = await this._repository.findOneBy({id})
+
+    if(!result) {
+      return null
+    }
+
+    return this.mapEntityToModel(result);
+  }
+
+  public async find(id: string) {
+    const result = await this._repository.findBy({
+      idUser: id
+    })
+
+    return result.map(item => {
+      return this.mapEntityToModel(item)
+    })
   }
 
   public async create(note: NotesModel) {
@@ -49,6 +71,10 @@ export class NoteRepository {
     await this._repository.save(noteEntity);
 
     return this.mapEntityToModel(noteEntity);
+  }
+
+  public async delete(id: string) {
+    return await this._repository.delete({id})
   }
 
 }

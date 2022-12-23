@@ -11,7 +11,9 @@ interface CreateNoteDTO {
 }
 
 export class CreateNoteUseCase {
-  constructor(private repostiroy: UserRepository, private noteRepository: NoteRepository) {}
+  constructor(
+    private repostiroy: UserRepository,
+    private noteRepository: NoteRepository) {}
 
   public async execute(data: CreateNoteDTO) {
     const user = await this.repostiroy.get(data.idUser);

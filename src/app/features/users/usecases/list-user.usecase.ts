@@ -1,11 +1,21 @@
+import { CacheRepository } from "../../../shared/repositories/cache.repository";
 import { UserRepository } from "../repositories/user.repository";
 
 export class ListUsersUseCase {
-  constructor(private repository: UserRepository) {}
+  constructor(
+    private repository: UserRepository,
+    private cacheRepository: CacheRepository) {}
 
   public async execute() {
-    const result = await this.repository.list();
+    const cachedList = await this.cacheRepository.get('users');
 
-    return result.map(item => item.toJson());
+    if(cachedList) {
+      return cachedList;
+    }
+
+    const result = await this.repository.list();
+    const resultJson = result.map(item => item.toJson());
+
+    return resultJson;
   }
 }

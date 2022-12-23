@@ -1,6 +1,7 @@
 import { DatabaseConnection } from "../../../../main/database/typeorm.connection";
 import { UserModel } from "../../../models/user.models";
 import { UserEntity } from "../../../shared/entities/user.entity";
+import { userRoutes } from "../routes/user.routes";
 
 // REPOSITÓRIO NÃO PODE RETORNAR ENTITY E SIM UM MODEL
 
@@ -14,7 +15,10 @@ export class UserRepository {
   private _repository = DatabaseConnection.connection.getRepository(UserEntity);
 
   private mapEntityToModel(userEntity: UserEntity) {
-    return UserModel.create(userEntity.idUser, userEntity.email, userEntity.password)
+    return UserModel.create(
+      userEntity.idUser,
+      userEntity.email,
+      userEntity.password)
   }
 
   public async list() {
@@ -51,15 +55,18 @@ export class UserRepository {
   }
 
   public async update(data: UpdateUserDTO) {
-    // if(data.email) {
-    //   userEntity.email = data.email;
-    // }
+    const result = await this._repository.update(
+      {
+        idUser: data.id
+      },
+      {
+        email: data.email,
+        password: data.password
+      }
+    );
 
-    // if(data.password) {
-    //   userEntity.password = data.password;
-    // }
+    return result;
 
-    return await this._repository.update({idUser: data.id},{email: data.email, password: data.password});
   }
 
   public async delete(id: string) {

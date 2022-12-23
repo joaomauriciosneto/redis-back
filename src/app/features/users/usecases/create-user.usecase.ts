@@ -1,4 +1,5 @@
 import { UserModel } from "../../../models/user.models";
+import { CacheRepository } from "../../../shared/repositories/cache.repository";
 import { UserRepository } from "../repositories/user.repository";
 
 interface CreateUserDTO {
@@ -7,7 +8,9 @@ interface CreateUserDTO {
 }
 
 export class CreateUserUseCase {
-  constructor(private repository: UserRepository) {}
+  constructor(
+    private repository: UserRepository,
+    private cacheRepository: CacheRepository) {}
 
   public async execute(data: CreateUserDTO) {
     const user = new UserModel(
@@ -16,7 +19,9 @@ export class CreateUserUseCase {
     )
 
     const result = await this.repository.create(user);
-    
+
+    await this.cacheRepository.delete('users');
+
     return result.toJson();
 
   }

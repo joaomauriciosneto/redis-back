@@ -1,3 +1,4 @@
+import { CacheRepository } from "../../../shared/repositories/cache.repository";
 import { UserRepository } from "../repositories/user.repository";
 
 interface UpdateUserDTO {
@@ -7,13 +8,22 @@ interface UpdateUserDTO {
 }
 
 export class UpdateUserUseCase {
-  constructor(private repository: UserRepository){}
+  constructor(
+    private repository: UserRepository,
+    private cacheRepository: CacheRepository){}
 
   public async execute(data: UpdateUserDTO) {
-    const idUser = await this.repository.get(data.id)
-    
-    const user = await this.repository.update(data)
+    const user = await this.repository.get(data.id)
 
-    return user;
+    if(!user) {
+      return null
+    }
+
+    user.email = data.email;
+    user.password = data.password;
+
+    const result = await this.repository.update(user);
+
+    return result;
   }
 }
