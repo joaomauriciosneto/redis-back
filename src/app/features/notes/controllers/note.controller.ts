@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CacheRepository } from "../../../shared/repositories/cache.repository";
-import { serverError, success } from "../../../shared/util/response.helper";
+import { notFound, serverError, success } from "../../../shared/util/response.helper";
 import { UserRepository } from "../../users/repositories/user.repository";
 import { NoteRepository } from "../repositories/note.repository";
 import { CreateNoteUseCase } from "../usecases/create-note.usecase";
@@ -27,6 +27,12 @@ export class NotesController {
         saveNote,
         idUser
       })
+
+      if(!result) {
+        return notFound(res, 'Not found!')
+      }
+
+      console.log(result)
 
       return success(res, result, 'Note successfully added!')
 
@@ -65,7 +71,11 @@ export class NotesController {
       )
 
       const result = await usecase.execute(id);
-      console.log(result)
+      // console.log(result)
+
+      if(!result) {
+        return notFound(res, 'Not found!')
+      }
 
       return success(res, result, 'Showing user notes!');
 

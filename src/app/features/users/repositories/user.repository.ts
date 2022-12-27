@@ -49,7 +49,7 @@ export class UserRepository {
     })
 
     const result = await this._repository.save(userCreate);
-
+    console.log(result)
     return this.mapEntityToModel(result);
 
   }

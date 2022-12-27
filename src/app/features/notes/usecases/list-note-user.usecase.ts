@@ -13,6 +13,7 @@ export class ListNoteUserUseCase {
       return null
     }
 
-    return notes.map(item => item.getNotes());
+    const result = notes.getNotes()
+    //return notes.map(item => item.getNotes());
   }
 }

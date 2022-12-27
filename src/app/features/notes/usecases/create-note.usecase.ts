@@ -28,7 +28,7 @@ export class CreateNoteUseCase {
       data.saveNote,
       user
     )
-
+    console.log(createNote)
     const newNote = await this.noteRepository.create(createNote);
 
     return newNote.getNotes();

@@ -43,13 +43,19 @@ export class NoteRepository {
   }
 
   public async find(id: string) {
-    const result = await this._repository.findBy({
-      idUser: id
+    const result = await this._repository.findOneBy({
+      id
     })
 
-    return result.map(item => {
-      return this.mapEntityToModel(item)
-    })
+    if(!result) {
+      return null
+    }
+
+    return this.mapEntityToModel(result)
+
+    // return result.map(item => {
+    //   return this.mapEntityToModel(item)
+    // })
   }
 
   public async create(note: NotesModel) {
