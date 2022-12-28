@@ -32,7 +32,7 @@ export class UserRepository {
   };
 
   public async get(id: string) {
-    const result = await this._repository.findBy({idUser: id});
+    const result = await this._repository.findOneBy({idUser: id});
 
     if(!result) {
       return null

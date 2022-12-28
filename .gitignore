@@ -3,3 +3,5 @@ build
 .env
 ativo.md
 instalacoes.md
+database.sqlite3
+tests/app/shared/migrations
