@@ -32,13 +32,13 @@ export class UserRepository {
   };
 
   public async get(id: string) {
-    const result = await this._repository.findOneBy({idUser: String(id)});
+    const result = await this._repository.findBy({idUser: id});
 
     if(!result) {
       return null
     }
 
-    return this.mapEntityToModel(result);
+    return this.mapEntityToModel(result)
   }
 
   public async create(user: UserModel) {

@@ -61,6 +61,7 @@ export class NoteRepository {
   public async create(note: NotesModel) {
     const userRepository = new UserRepository();
     const user = await userRepository.get(note.user.id);
+    console.log(user)
 
     if(!user) {
       throw new Error('User not found!');

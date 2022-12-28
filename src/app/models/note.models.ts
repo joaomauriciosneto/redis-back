@@ -9,6 +9,7 @@ export class NotesModel {
         private _title: string,
         private _description: string,
         private _saveNote: boolean = false,
+        // private _notes: NotesModel,
         private _user: UserModel
     ){
         this._id = idNotes();
@@ -26,9 +27,13 @@ export class NotesModel {
         return this._id;
     }
 
-    public get notes(): string[] {
-        return this.notes ?? []
-    }
+    // public get notes(): string[] {
+    //     return this.notes ?? []
+    // }
+
+    // public set notes(notes: NotesModel) {
+    //   this._notes = notes
+    // }
 
     public get user() {
         return this._user;
@@ -60,7 +65,7 @@ export class NotesModel {
             title: this._title,
             description: this._description,
             saveNote: this._saveNote,
-            notes: this.notes,
+            // notes: this.notes,
             user: this.user
         }
     }
@@ -70,6 +75,7 @@ export class NotesModel {
         title: string,
         description: string,
         saveNote: boolean,
+        // notes: NotesModel,
         user: UserModel
     ) {
        const note = new NotesModel(title, description, saveNote, user);
