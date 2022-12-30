@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { userValidator } from "../../../shared/middlewares/user.validator.middleware";
 import { UserController } from "../controllers/user.controller";
 
 export const userRoutes = () => {
@@ -7,10 +8,10 @@ export const userRoutes = () => {
 
   router.get('/', new UserController().list);
   router.post('/login', new UserController().login);
-  router.get('/:id', new UserController().get);
+  router.get('/:idUser', [userValidator], new UserController().get);
   router.post('/', new UserController().create);
-  router.delete('/:id', new UserController().delete);
-  router.put('/:id', new UserController().update);
+  router.delete('/:idUser', new UserController().delete);
+  router.put('/:idUser', new UserController().update);
 
   return router;
 

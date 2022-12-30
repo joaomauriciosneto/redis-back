@@ -70,7 +70,20 @@ export class UserRepository {
   }
 
   public async delete(id: string) {
-    return await this._repository.delete(id)
+
+    const user = await this._repository.findOneBy({idUser: id})
+
+    if(!user) {
+      return null
+    }
+
+    await this._repository.delete(user)
+
+    return user;
+
+    // const result =  await this._repository.delete(id)
+
+    // return result;
   }
 
   public async login(email: string, password: string) {

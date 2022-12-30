@@ -1,20 +1,14 @@
-import {DatabaseConnection} from '../../../../../src/main/database/typeorm.connection'
-import {CacheConnection} from '../../../../../src/main/database/cache.connection'
 import {CreateUserUseCase} from '../../../../../src/app/features/users/usecases/create-user.usecase'
 import { UserRepository } from '../../../../../src/app/features/users/repositories/user.repository';
 import { CacheRepository } from '../../../../../src/app/shared/repositories/cache.repository';
 import { UserModel } from '../../../../../src/app/models/user.models';
+import {openConnection} from '../../../../util/open-connection';
+import {closeConnection} from '../../../../util/close-connection';
 
 describe('Create a new user with unit test', () => {
-  beforeAll(async () => {
-    await DatabaseConnection.connect();
-    await CacheConnection.connect();
-  })
 
-  afterAll(async () => {
-    await DatabaseConnection.connection.destroy();
-    await CacheConnection.connection.quit();
-  })
+  beforeAll(async () => openConnection());
+  afterAll(async () => closeConnection());
 
   const makeSut = () => {
     const sut = new CreateUserUseCase(

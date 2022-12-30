@@ -6,8 +6,8 @@ export const noteRoutes = () => {
   const router = Router();
 
   router.get('/', new NotesController().list);
-  router.post('/:id', new NotesController().create);
-  router.get('/:id', new NotesController().get);
+  router.post('/:idUser', new NotesController().create);
+  router.get('/:idUser', new NotesController().get);
 
   return router;
 

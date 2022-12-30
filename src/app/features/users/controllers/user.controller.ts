@@ -48,13 +48,13 @@ export class UserController {
 
   public async get(req: Request, res: Response) {
     try {
-      const {id} = req.params;
+      const {idUser} = req.params;
       const usecase = new GetUserUseCase(
         new UserRepository(),
         new CacheRepository()
       );
 
-      const result = await usecase.execute({id});
+      const result = await usecase.execute(idUser);
 
       return success(res, result, 'Listing User by Id!');
 
@@ -65,7 +65,7 @@ export class UserController {
 
   public async update(req: Request, res: Response) {
     try {
-      const {id} = req.params;
+      const {idUser} = req.params;
       const {email, password} = req.body;
       const usecase = new UpdateUserUseCase(
         new UserRepository(),
@@ -73,7 +73,7 @@ export class UserController {
       );
 
       const result = await usecase.execute({
-        id,
+        id: idUser,
         email,
         password
       })
@@ -94,11 +94,11 @@ export class UserController {
 
   public async delete(req: Request, res: Response) {
     try {
-      const {id} = req.params;
+      const {idUser} = req.params;
       const repository = new UserRepository();
       const usecase = new DeleteUserUseCase(repository);
 
-      const result = await usecase.execute({id});
+      const result = await usecase.execute(idUser);
 
       return success(res, result, 'Listing successfully deleted!');
 
@@ -113,8 +113,7 @@ export class UserController {
 
       const {email, password} = req.body;
       const usecase = new LoginUserUseCase(
-        new UserRepository(),
-        new CacheRepository()
+        new UserRepository()
       );
 
       const result = await usecase.execute(email, password);

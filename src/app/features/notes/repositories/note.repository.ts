@@ -2,30 +2,69 @@ import { DatabaseConnection } from "../../../../main/database/typeorm.connection
 import { NotesModel } from "../../../models/note.models";
 import { UserModel } from "../../../models/user.models";
 import { NoteEntity } from "../../../shared/entities/note.entity";
+import { SharedUserRepository } from "../../../shared/repositories/SharedUserRepository";
 import { UserRepository } from "../../users/repositories/user.repository";
+
+interface UpdateNoteDTO {
+  title: string;
+  description: string;
+  saveNote: boolean;
+  idUser: string;
+}
 
 export class NoteRepository {
   private _repository = DatabaseConnection.connection.getRepository(NoteEntity);
 
+  // private mapEntityToModel(noteEntity: NoteEntity) {
+  //   const user = UserModel.create(
+  //     noteEntity.user.idUser,
+  //     noteEntity.user.email,
+  //     noteEntity.user.password)
+
+  //   return NotesModel.create(
+  //     noteEntity.idUser,
+  //     noteEntity.title,
+  //     noteEntity.description,
+  //     noteEntity.saveNote,
+  //     user )
+  // }
+
   private mapEntityToModel(noteEntity: NoteEntity) {
-    const user = UserModel.create(noteEntity.user.idUser, noteEntity.user.email, noteEntity.user.password)
+    const user = UserModel.create(noteEntity.idUser, noteEntity.user.email, noteEntity.user.password)
 
     return NotesModel.create(
       noteEntity.id,
       noteEntity.title,
       noteEntity.description,
       noteEntity.saveNote,
-      user )
+      user
+    )
   }
 
-  public async list(){
-    const resutl = await this._repository.find({
-      relations: {
-        user: true
+  public async listNotesById(idUser: string) {
+    const notes = await this._repository.find({
+      where: {
+        idUser
       }
+    });
+    const result = notes.map(item => {
+      return this.mapEntityToModel(item)
     })
 
-    const notes = resutl.map(item => {
+    return result
+  }
+
+
+  public async list(){
+    // const resutl = await this._repository.find({
+    //   relations: {
+    //     user: true
+    //   }
+    // })
+
+    const result = await this._repository.find()
+
+    const notes = result.map(item => {
       return this.mapEntityToModel(item)
     })
 
@@ -43,8 +82,14 @@ export class NoteRepository {
   }
 
   public async find(id: string) {
-    const result = await this._repository.findOneBy({
-      id
+
+    const result = await this._repository.findOne({
+      relations: {
+        user: true
+      },
+      where: {
+        id
+      }
     })
 
     if(!result) {
@@ -52,10 +97,19 @@ export class NoteRepository {
     }
 
     return this.mapEntityToModel(result)
-
-    // return result.map(item => {
-    //   return this.mapEntityToModel(item)
+    // const result = await this._repository.findOneBy({
+    //   id
     // })
+
+    // if(!result) {
+    //   return null
+    // }
+
+    // return this.mapEntityToModel(result)
+
+    // // return result.map(item => {
+    // //   return this.mapEntityToModel(item)
+    // // })
   }
 
   public async create(note: NotesModel) {
@@ -72,16 +126,37 @@ export class NoteRepository {
       title: note.title,
       description: note.description,
       saveNote: note.saveNote,
-      user: user
+      idUser: note.user.id
     })
 
     await this._repository.save(noteEntity);
 
-    return this.mapEntityToModel(noteEntity);
+    const createNote = await this._repository.findOneBy({
+      id: note.idNotes
+    })
+
+    return this.mapEntityToModel(createNote!);
   }
 
   public async delete(id: string) {
     return await this._repository.delete({id})
   }
+
+  public async editUser(data: UpdateNoteDTO) {
+    const noteUpdate = await this._repository.update(
+      {
+        idUser: data.idUser
+      },
+      {
+        title: data.title,
+        description: data.description,
+        saveNote: data.saveNote
+      }
+    )
+
+    return noteUpdate;
+
+  }
+
 
 }

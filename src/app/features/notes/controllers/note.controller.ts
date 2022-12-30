@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CacheRepository } from "../../../shared/repositories/cache.repository";
+import { SharedUserRepository } from "../../../shared/repositories/SharedUserRepository";
 import { notFound, serverError, success } from "../../../shared/util/response.helper";
 import { UserRepository } from "../../users/repositories/user.repository";
 import { NoteRepository } from "../repositories/note.repository";
@@ -65,12 +66,14 @@ export class NotesController {
 
     try {
 
-      const {id} = req.params;
+      const {idUser} = req.params;
       const usecase = new ListNoteUserUseCase(
-        new NoteRepository()
+        new UserRepository(),
+        new NoteRepository(),
+        new SharedUserRepository()
       )
 
-      const result = await usecase.execute(id);
+      const result = await usecase.execute(idUser);
       // console.log(result)
 
       if(!result) {
