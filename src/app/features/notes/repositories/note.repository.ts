@@ -15,20 +15,6 @@ interface UpdateNoteDTO {
 export class NoteRepository {
   private _repository = DatabaseConnection.connection.getRepository(NoteEntity);
 
-  // private mapEntityToModel(noteEntity: NoteEntity) {
-  //   const user = UserModel.create(
-  //     noteEntity.user.idUser,
-  //     noteEntity.user.email,
-  //     noteEntity.user.password)
-
-  //   return NotesModel.create(
-  //     noteEntity.idUser,
-  //     noteEntity.title,
-  //     noteEntity.description,
-  //     noteEntity.saveNote,
-  //     user )
-  // }
-
   private mapEntityToModel(noteEntity: NoteEntity) {
     const user = UserModel.create(noteEntity.idUser, noteEntity.user.email, noteEntity.user.password)
 
@@ -47,6 +33,7 @@ export class NoteRepository {
         idUser
       }
     });
+
     const result = notes.map(item => {
       return this.mapEntityToModel(item)
     })
@@ -56,12 +43,6 @@ export class NoteRepository {
 
 
   public async list(){
-    // const resutl = await this._repository.find({
-    //   relations: {
-    //     user: true
-    //   }
-    // })
-
     const result = await this._repository.find()
 
     const notes = result.map(item => {
@@ -79,37 +60,6 @@ export class NoteRepository {
     }
 
     return this.mapEntityToModel(result);
-  }
-
-  public async find(id: string) {
-
-    const result = await this._repository.findOne({
-      relations: {
-        user: true
-      },
-      where: {
-        id
-      }
-    })
-
-    if(!result) {
-      return null
-    }
-
-    return this.mapEntityToModel(result)
-    // const result = await this._repository.findOneBy({
-    //   id
-    // })
-
-    // if(!result) {
-    //   return null
-    // }
-
-    // return this.mapEntityToModel(result)
-
-    // // return result.map(item => {
-    // //   return this.mapEntityToModel(item)
-    // // })
   }
 
   public async create(note: NotesModel) {
@@ -138,8 +88,11 @@ export class NoteRepository {
     return this.mapEntityToModel(createNote!);
   }
 
-  public async delete(id: string) {
-    return await this._repository.delete({id})
+  // FALTA TERMINAR ESSE MÉTODO
+  public async delete(idNotes: string) {
+
+    return await this._repository.delete(idNotes);
+
   }
 
   public async editUser(data: UpdateNoteDTO) {
@@ -157,6 +110,5 @@ export class NoteRepository {
     return noteUpdate;
 
   }
-
 
 }

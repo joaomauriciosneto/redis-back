@@ -1,5 +1,4 @@
 import { DatabaseConnection } from "../../../main/database/typeorm.connection";
-import { UserRepository } from "../../features/users/repositories/user.repository";
 import { UserModel } from "../../models/user.models";
 import { UserEntity } from "../entities/user.entity";
 

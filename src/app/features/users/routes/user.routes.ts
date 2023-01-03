@@ -10,8 +10,8 @@ export const userRoutes = () => {
   router.post('/login', new UserController().login);
   router.get('/:idUser', [userValidator], new UserController().get);
   router.post('/', new UserController().create);
-  router.delete('/:idUser', new UserController().delete);
-  router.put('/:idUser', new UserController().update);
+  router.delete('/:idUser', [userValidator], new UserController().delete);
+  router.put('/:idUser', [userValidator], new UserController().update);
 
   return router;
 

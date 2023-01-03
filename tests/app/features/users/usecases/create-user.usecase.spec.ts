@@ -4,6 +4,8 @@ import { CacheRepository } from '../../../../../src/app/shared/repositories/cach
 import { UserModel } from '../../../../../src/app/models/user.models';
 import {openConnection} from '../../../../util/open-connection';
 import {closeConnection} from '../../../../util/close-connection';
+import {serverError} from '../../../../../src/app/shared/util/response.helper'
+import { UserEntity } from '../../../../../src/app/shared/entities/user.entity';
 
 describe('Create a new user with unit test', () => {
 
@@ -38,5 +40,22 @@ describe('Create a new user with unit test', () => {
     expect(result).toHaveProperty('email',user.email);
     expect(result).toHaveProperty('password', user.password);
 
+  });
+
+  test('should not able to create two users with the same email ', async () => {
+    const sut = makeSut();
+
+    const user = {
+      email: 'teste@teste.com',
+      password: '123abc'
+    }
+
+    jest.spyOn(UserRepository.prototype, 'findByEmail').mockResolvedValue(new UserEntity())
+
+    jest.spyOn(CacheRepository.prototype, 'delete').mockResolvedValue();
+
+    const result = sut.execute(user);
+
+    await expect(result).rejects.toThrow(new Error('Email already used!'))
   });
 });

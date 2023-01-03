@@ -7,7 +7,7 @@ interface UpdateNoteDTO {
   description: string;
   saveNote: boolean;
   idUser: string;
-  idNote: string;
+  idNotes: string;
 }
 
 export class UpdateNoteUsecase {
@@ -18,18 +18,26 @@ export class UpdateNoteUsecase {
   ) {}
 
   public async execute(data: UpdateNoteDTO) {
-    const user = await this.userRepository.getUserById(data.idUser)
-
-    if(!user) {
-      throw new Error('User not found!')
-    }
-
-    const note = await this.noteRepository.listNotesById(data.idUser)
+    const note = await this.noteRepository.get(data.idNotes)
 
     if(!note) {
-      throw new Error('Not found!')
+      return null;
     }
 
+    if(data.idUser != note.user.id) {
+      throw new Error('Only the owner of the message can change!')
+    }
+
+    note.title = data.title;
+    note.description = data.description;
+    note.saveNote = data.saveNote;
+
+    const result = await this.noteRepository.editUser(data);
+
+    await this.cacheRepository.delete(`note-${note.idNotes}`);
+    await this.cacheRepository.delete(`note-${note.user.id}`);
+
+    return result;
   }
 
 }

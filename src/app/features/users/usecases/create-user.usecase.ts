@@ -18,6 +18,12 @@ export class CreateUserUseCase {
       data.password
     )
 
+    const userExists = await this.repository.findByEmail(data.email)
+
+    if(userExists) {
+      throw new Error('Email already used!')
+    }
+
     const result = await this.repository.create(user);
 
     await this.cacheRepository.delete('users');

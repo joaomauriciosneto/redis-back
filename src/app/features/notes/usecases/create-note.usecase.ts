@@ -17,7 +17,6 @@ export class CreateNoteUseCase {
 
   public async execute(data: CreateNoteDTO) {
     const user = await this.repostiroy.get(data.idUser);
-    //console.log(user);
 
     if(!user) {
       return null;
@@ -31,7 +30,6 @@ export class CreateNoteUseCase {
     )
     console.log(createNote)
     const newNote = await this.noteRepository.create(createNote);
-    //console.log(newNote);
 
     return newNote.getNotes();
   }

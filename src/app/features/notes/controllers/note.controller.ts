@@ -5,8 +5,10 @@ import { notFound, serverError, success } from "../../../shared/util/response.he
 import { UserRepository } from "../../users/repositories/user.repository";
 import { NoteRepository } from "../repositories/note.repository";
 import { CreateNoteUseCase } from "../usecases/create-note.usecase";
+import { DeleteNoteByUser } from "../usecases/delete-note-user.usecase";
 import { ListNoteUserUseCase } from "../usecases/list-note-user.usecase";
 import { ListNotesUseCase } from "../usecases/list-note.usecase";
+import { UpdateNoteUsecase } from "../usecases/update-note.usecase";
 
 export class NotesController {
 
@@ -36,6 +38,39 @@ export class NotesController {
       console.log(result)
 
       return success(res, result, 'Note successfully added!')
+
+    } catch (error: any) {
+      return serverError(res, error)
+    }
+
+  }
+
+  public async updateNote(req: Request, res: Response) {
+
+    try {
+
+      const {idUser, idNotes} = req.params;
+      const {title, description, saveNote} = req.body;
+
+       const usecase = new UpdateNoteUsecase(
+        new NoteRepository(),
+        new CacheRepository(),
+        new SharedUserRepository()
+      )
+
+      const result = await usecase.execute({
+        title,
+        description,
+        saveNote,
+        idUser,
+        idNotes
+      })
+
+      if(result == null) {
+        return notFound(res, result, 'Note not found!')
+      }
+
+      return success(res, result, 'Note successfully updated!')
 
     } catch (error: any) {
       return serverError(res, error)
@@ -74,13 +109,38 @@ export class NotesController {
       )
 
       const result = await usecase.execute(idUser);
-      // console.log(result)
 
       if(!result) {
         return notFound(res, 'Not found!')
       }
 
       return success(res, result, 'Showing user notes!');
+
+    } catch (error: any) {
+      return serverError(res, error)
+    }
+
+  }
+
+  public async DeleteNoteByUser(req: Request, res: Response) {
+
+    try {
+
+      const {idUser, idNotes} = req.params;
+      const usecase = new DeleteNoteByUser(
+        new NoteRepository()
+      )
+
+      const result = await usecase.execute(idUser, idNotes);
+
+      if(!result) {
+        return res.status(404).send({
+          ok: false,
+          message: 'Note not found!!'
+        })
+      }
+
+      return success(res, result, 'Note successfully deleted!')
 
     } catch (error: any) {
       return serverError(res, error)

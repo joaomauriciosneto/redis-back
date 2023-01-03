@@ -2,23 +2,6 @@ import { SharedUserRepository } from "../../../shared/repositories/SharedUserRep
 import { UserRepository } from "../../users/repositories/user.repository";
 import { NoteRepository } from "../repositories/note.repository";
 
-// export class ListNoteUserUseCase {
-//   constructor(
-//     private repository: NoteRepository,
-//     private userRepository: SharedUserRepository
-//   ) {}
-
-//   public async execute(idUser: string) {
-//     const notes = await this.repository.listNotesById(idUser)
-
-//     if(!notes) {
-//       return null
-//     }
-
-//     return notes.map(item => item.getNotes());
-//   }
-// }
-
 export class ListNoteUserUseCase {
   constructor(
     private userRepository: UserRepository,
