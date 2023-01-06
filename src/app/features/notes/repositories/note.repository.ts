@@ -38,7 +38,7 @@ export class NoteRepository {
       return this.mapEntityToModel(item)
     })
 
-    return result
+    return result;
   }
 
 
@@ -88,7 +88,6 @@ export class NoteRepository {
     return this.mapEntityToModel(createNote!);
   }
 
-  // FALTA TERMINAR ESSE MÉTODO
   public async delete(idNotes: string) {
 
     return await this._repository.delete(idNotes);
@@ -107,7 +106,7 @@ export class NoteRepository {
       }
     )
 
-    return noteUpdate;
+    return noteUpdate.affected ?? 0;
 
   }
 

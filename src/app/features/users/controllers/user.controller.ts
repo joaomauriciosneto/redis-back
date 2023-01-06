@@ -23,7 +23,7 @@ export class UserController {
         password
       })
 
-      return success(res, restult, 'User successfully created!')
+      return success(res, restult, 'User successfully created!', 201)
 
     } catch (error: any) {
       return serverError(res, error);

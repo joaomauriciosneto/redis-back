@@ -18,7 +18,7 @@ export class DeleteUserUseCase {
     const userVerify = new NoteRepository()
     const resultVerify = await userVerify.listNotesById(id)
 
-    if(resultVerify.length > 0 && user.id == id) {
+    if(resultVerify.length > 0) {
       throw new Error('It is not possible to delete the user, because the and even has note!')
     }
     // *********************************************

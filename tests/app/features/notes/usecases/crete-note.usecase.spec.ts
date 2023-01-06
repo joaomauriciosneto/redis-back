@@ -19,7 +19,7 @@ describe('create a note unit test', () => {
     return sut;
   }
 
-  test('should be able to create a note to an user with a valid id', async () => {
+  test('should be able to create a note to an user', async () => {
     const sut = makeSut();
 
     const user = new UserModel(
@@ -34,9 +34,19 @@ describe('create a note unit test', () => {
       user
     )
 
+    jest.spyOn(UserRepository.prototype, 'get').mockResolvedValue(user)
     jest.spyOn(NoteRepository.prototype, 'create').mockResolvedValue(note)
 
-    //const result = await sut.execute()
+    const result = await sut.execute({
+      title: 'any_title',
+      description: 'any_desc',
+      saveNote: false,
+      idUser: user.id
+    })
+
+    expect(result).toBeDefined();
+    expect(result).toEqual(note.getNotes());
+
   });
 
 });

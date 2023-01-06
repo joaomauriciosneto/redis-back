@@ -19,7 +19,8 @@ export class CreateNoteUseCase {
     const user = await this.repostiroy.get(data.idUser);
 
     if(!user) {
-      return null;
+      throw new Error('User not found!');
+      // return null;
     }
 
     const createNote = new NotesModel(
@@ -28,7 +29,6 @@ export class CreateNoteUseCase {
       data.saveNote,
       user
     )
-    console.log(createNote)
     const newNote = await this.noteRepository.create(createNote);
 
     return newNote.getNotes();

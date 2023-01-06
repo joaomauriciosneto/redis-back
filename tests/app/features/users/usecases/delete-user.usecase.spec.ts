@@ -29,20 +29,18 @@ describe('Delete an user unit test', () => {
     await expect(result).rejects.toThrow(new Error('User not found!'))
   });
 
-  // NÃO ESTÁ PASSANDO ESSE TESTE
-  test('should not be able to delete a user if they have any note', async () => {
+  test('should not be able to delete a user if he has any note', async () => {
     const sut = makeSut();
 
     const user = new UserModel('teste@teste.com', '123abc')
     const note = new NotesModel('any_title', 'any_desc', false, user)
 
     jest.spyOn(SharedUserRepository.prototype, 'getUserById').mockResolvedValue(user)
-    jest.spyOn(NoteRepository.prototype, 'create').mockResolvedValue(note)
+    jest.spyOn(NoteRepository.prototype, 'listNotesById').mockResolvedValue([note])
 
-    const result = await sut.execute('123abc');
+    const result = sut.execute('123abc');
 
-    expect(result).not.toBeNull();
-    expect(result).toHaveProperty('id');
+    await expect(result).rejects.toThrow(new Error('It is not possible to delete the user, because the and even has note!'));
 
   });
 });

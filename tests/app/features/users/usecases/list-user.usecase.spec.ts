@@ -21,9 +21,9 @@ describe('listing all users', () => {
     const sut = makeSut();
     const result = await sut.execute()
 
-    const resultJson = jest.spyOn(UserRepository.prototype, 'list').mockResolvedValue(result);
+    jest.spyOn(UserRepository.prototype, 'list').mockResolvedValue(result);
 
-    expect(resultJson).toBeDefined();
+    expect(result).toBeDefined();
 
   });
 

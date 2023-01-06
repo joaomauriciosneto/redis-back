@@ -19,8 +19,8 @@ export class UpdateUserUseCase {
       return null
     }
 
-    user.email = data.email;
-    user.password = data.password;
+    user.email = data.email ?? user.email;
+    user.password = data.password ?? user.password;
 
     const result = await this.repository.update(user);
 

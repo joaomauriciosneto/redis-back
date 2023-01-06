@@ -32,12 +32,17 @@ export class NotesController {
       })
 
       if(!result) {
-        return notFound(res, 'Not found!')
+        return res.status(404).send({
+          ok: false,
+          message: 'User not found!'
+        })
       }
 
-      console.log(result)
-
-      return success(res, result, 'Note successfully added!')
+      return res.status(201).send({
+        ok: true,
+        message: 'Note successfully added!',
+        data: result
+      })
 
     } catch (error: any) {
       return serverError(res, error)
@@ -133,12 +138,12 @@ export class NotesController {
 
       const result = await usecase.execute(idUser, idNotes);
 
-      if(!result) {
-        return res.status(404).send({
-          ok: false,
-          message: 'Note not found!!'
-        })
-      }
+      // if(!result) {
+      //   return res.status(404).send({
+      //     ok: false,
+      //     message: 'Note not found!!'
+      //   })
+      // }
 
       return success(res, result, 'Note successfully deleted!')
 

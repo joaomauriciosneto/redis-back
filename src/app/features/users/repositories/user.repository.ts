@@ -72,7 +72,7 @@ export class UserRepository {
       }
     );
 
-    return result;
+    return result.affected ?? 0;
 
   }
 

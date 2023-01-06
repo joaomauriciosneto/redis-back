@@ -7,8 +7,8 @@ export const serverError = (res: Response, error: any) => {
     });
 };
 
-export const success = (res: Response, data?: any, message?: string) => {
-    return res.status(200).send({
+export const success = (res: Response, data?: any, message?: string, code?: number) => {
+    return res.status(code ?? 200).send({
         ok: true,
         mensagem: message,
         data,
@@ -17,7 +17,7 @@ export const success = (res: Response, data?: any, message?: string) => {
 
 export const notFound = (res: Response, data?: any, message?: string) => {
   return res.status(404).send({
-      ok: true,
+      ok: false,
       mensagem: message,
       data,
   });
