@@ -55,6 +55,4 @@ describe('User - integration controller test', () => {
 
   });
 
-
-
 });

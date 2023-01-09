@@ -66,7 +66,7 @@ describe('User controller unit tests', () => {
     expect(result).toHaveProperty('body.ok', false);
   });
 
-  test('must be able to return HTTP 501 when usecase throws exception', async () => {
+  test('should be able to return HTTP 501 when usecase throws exception', async () => {
     const app = makeSut();
 
     const user = {
