@@ -34,7 +34,7 @@ describe('User controller unit tests', () => {
     expect(result.statusCode).toBe(400);
   });
 
-  test('must be able to return HTTP 201 when user is successfully created', async () => {
+  test('should be able to return HTTP 201 when user is successfully created', async () => {
     const app = makeSut();
 
     const user = {

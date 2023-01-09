@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CacheRepository } from "../../../shared/repositories/cache.repository";
-import { serverError, success } from "../../../shared/util/response.helper";
+import { notFound, serverError, success } from "../../../shared/util/response.helper";
 import { UserRepository } from "../repositories/user.repository";
 import { CreateUserUseCase } from "../usecases/create-user.usecase";
 import { DeleteUserUseCase } from "../usecases/delete-user.usecase";
@@ -55,6 +55,13 @@ export class UserController {
       );
 
       const result = await usecase.execute(idUser);
+
+      if(!result) {
+        return res.status(404).send({
+          ok: false,
+          message: 'User not found!'
+        })
+      }
 
       return success(res, result, 'Listing User by Id!');
 
